@@ -1,0 +1,45 @@
+const jobForm = document.getElementById("jobForm");
+const jobList = document.getElementById("jobList");
+
+// Load saved jobs from local storage
+let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+
+function displayJobs() {
+  jobList.innerHTML = "";
+  jobs.forEach((job, index) => {
+    const div = document.createElement("div");
+    div.classList.add("job");
+    div.innerHTML = `
+      <h3>${job.title}</h3>
+      <p><strong>Company:</strong> ${job.company}</p>
+      <p><strong>Location:</strong> ${job.location}</p>
+      <p><strong>Status:</strong> ${job.status}</p>
+      <button onclick="deleteJob(${index})">🗑️ Delete</button>
+    `;
+    jobList.appendChild(div);
+  });
+}
+
+function deleteJob(index) {
+  jobs.splice(index, 1);
+  localStorage.setItem("jobs", JSON.stringify(jobs));
+  displayJobs();
+}
+
+jobForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const job = {
+    title: document.getElementById("title").value,
+    company: document.getElementById("company").value,
+    location: document.getElementById("location").value,
+    status: document.getElementById("status").value,
+  };
+
+  jobs.push(job);
+  localStorage.setItem("jobs", JSON.stringify(jobs));
+  jobForm.reset();
+  displayJobs();
+});
+
+displayJobs();
